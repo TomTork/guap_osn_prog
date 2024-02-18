@@ -10,7 +10,7 @@ int* function2(int value) {
     for (int i = 0; i < value * 2 + 1; i++) {
         mas[i] = i;
     }
-    for (int s = 2; s < value * 2 + 1; s++) {
+    for (int s = 2; s < value * 2 + 1; s++) { //Нахождение простых чисел с помощью решета Эратосфена
         if (mas[s] != 0) {
             for (int d = s * s; d < value * 2 + 1; d += s) {
                 mas[d] = 0;
@@ -20,10 +20,10 @@ int* function2(int value) {
     vector<int> simple;
     int first = 0;
     int second = 0;
-    for (int i = 2; i < value * 2 + 1; i++) {
+    for (int i = 2; i < value * 2 + 1; i++) { //Группировка простых чисел в один массив
         if (mas[i] != 0) simple.push_back(mas[i]);
     }
-    for (int i = 0; i < simple.size(); i++) {
+    for (int i = 0; i < simple.size(); i++) { //Нахождение двух ближайших простых чисел
         if (simple[i] > value) { first = simple[i]; break; }
         else if(simple[i] != value) second = simple[i];
     }
