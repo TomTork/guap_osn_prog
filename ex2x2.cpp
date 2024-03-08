@@ -4,10 +4,11 @@
 
 using namespace std;
 
-void to_lower(string& raw, int _size) { //все char в нижний регистр
+string to_lower(string raw, int _size) { //все char в нижний регистр
     for (int i = 0; i < _size; i++) {
         raw[i] = tolower(raw[i]);
     }
+    return raw;
 }
 
 string to_first_upper(string& raw) { //первый элемент строки в верхний регистр
@@ -17,7 +18,7 @@ string to_first_upper(string& raw) { //первый элемент строки 
     return answer;
 }
 
-void split(string* &mas, int &_size, string raw, bool* case_mas) { //split string with " "
+void split(string* &mas, int &_size, string raw, bool* &case_mas, map<string, string> &dictionary) { //split string with " "
     int index = 0;
     int finded = 0;
     while (raw.find(" ")) {
@@ -27,8 +28,10 @@ void split(string* &mas, int &_size, string raw, bool* case_mas) { //split strin
 
         if (isupper(mas[index][0])) case_mas[index] = true;
         else case_mas[index] = false;
-        to_lower(mas[index], mas[index].size());
-
+        //только если слово находится в словаре, заносим в нижний регистр:
+        if (dictionary.count(to_lower(mas[index], mas[index].size())) != 0) {
+            mas[index] = to_lower(mas[index], mas[index].size());
+        }
         raw = raw.substr(finded + 1, raw.size());
         index++;
     }
@@ -43,7 +46,7 @@ string function22(string raw) {
     int _size = count(raw.begin(), raw.end(), ' ') + 1; //Количество пробелов в строке
     string* mas = new string[_size];
     bool* case_mas = new bool[_size]{ false };
-    split(mas, _size, raw, case_mas);
+    split(mas, _size, raw, case_mas, dictionary);
     for (int i = 0; i < _size; i++) {
         if (dictionary.count(mas[i])) mas[i] = dictionary[mas[i]];
     }
