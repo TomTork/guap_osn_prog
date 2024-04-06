@@ -18,7 +18,7 @@ typedef struct Basket
     float weight = 0;
 } basket;
 
-int compare(const void *a, const void *b) { //компаротор сортировки в qsort
+int compare(const void *a, const void *b) { //компаратор сортировки в qsort
     basket *basketA = (basket *)a;
     basket *basketB = (basket *)b;
     return (basketA->weight - basketB->weight);
