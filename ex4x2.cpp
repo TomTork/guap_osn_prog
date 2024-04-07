@@ -120,8 +120,6 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
             }
         }
     }
-    int* index_results = new int[amount_basket * amount_items * amount_items] {0};
-    int index = 0;
     unsigned long long raz = 0;
     int answer_raz = INT32_MAX;
     int result_index = 0;
@@ -132,21 +130,15 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
             for (int j = 0; j < amount_basket - 1; j++) {
                 raz += abs(in_all_baskets[i + j].weight - in_all_baskets[i + j + 1].weight); //Вычисляем сумму разностей между соседними массами
             }
-            if (raz != 0) {
-                index_results[index] = raz;
-                index++;
-            }
             //Найдено идеально усреднённое значение (во всех корзинах одинаковый вес, а значит, максимальный для каждой из корзин)
-            else if (raz == 0) {
+            if (raz == 0) {
                 result_index = i;
                 break;
             }
-
-            if (answer_raz > raz) { //Находим минимальную разницу
+            else if (answer_raz > raz) { //Находим минимальную разницу
                 answer_raz = raz;
                 result_index = i;
             }
-            
         }
     }
     //Заносим значение в ответ
