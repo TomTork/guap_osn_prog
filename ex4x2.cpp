@@ -141,12 +141,12 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
                 result_index = i;
                 break;
             }
-            else {
-                if (answer_raz > raz) { //Находим минимальную разницу
-                    answer_raz = raz;
-                    result_index = i;
-                }
+
+            if (answer_raz > raz) { //Находим минимальную разницу
+                answer_raz = raz;
+                result_index = i;
             }
+            
         }
     }
     //Заносим значение в ответ
