@@ -32,7 +32,7 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
     Basket* in_all_baskets = new Basket[amount_basket * amount_items * amount_items];
     int index_baskets = 0;
     for (int i = 0; i < amount_items; i++) { //Сортировка по увеличению объёма и уменьшению массы
-        for (int j = i + 1; j < amount_items; j++) {
+        for (int j = 0; j < amount_items - 1; j++) {
             if (items[i].volume < items[j].volume && items[i].weight > items[j].weight) {
 
                 //поиск лучших значений
@@ -41,7 +41,8 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
                 for (int z = 0; z < amount_items; z++) time_items[z] = items[z]; //Копирование во временный массив
                 for (int index_item = 0; index_item < amount_items; index_item += amount_basket) {
                     for (int d = 0; d < amount_basket; d++) {
-                        if (time_baskets[d].volume + time_items[index_item + d].volume <= max_volume) { //заносим значения во временный массив, пока объём это позволяет
+                        //заносим значения во временный массив, пока объём это позволяет
+                        if (time_baskets[d].volume + time_items[index_item + d].volume <= max_volume) { 
                             time_baskets[d].volume += time_items[index_item + d].volume;
                             time_baskets[d].weight += time_items[index_item + d].weight;
                             time_items[index_item + d].volume = 0;
@@ -52,7 +53,8 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
                 qsort(time_baskets, amount_basket, sizeof(basket), compare); //сортировка по возрастанию массы
                 for (int z = 0; z < amount_items; z++) {
                     if (time_items[z].volume > 0) {
-                        for (int ti = 0; ti < amount_basket; ti++) { //проверяем возможно ли добавить доп. массу в организованный список
+                        //проверяем возможно ли добавить доп. массу в организованный список
+                        for (int ti = 0; ti < amount_basket; ti++) { 
                             if (time_baskets[ti].volume + time_items[z].volume <= max_volume) {
                                 time_baskets[ti].volume += time_items[z].volume;
                                 time_baskets[ti].weight += time_items[z].weight;
@@ -75,7 +77,7 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
     }
     //Проходимся по всем значениям так же, как и выше, но сортируем в обратном порядке
     for (int i = 0; i < amount_items; i++) { //Сортировка по убыванию объёма и возрастанию массы
-        for (int j = i + 1; j < amount_items; j++) {
+        for (int j = 0; j < amount_items - 1; j++) {
             if (items[i].volume > items[j].volume && items[i].weight < items[j].weight) {
 
                 //поиск лучших значений
@@ -84,7 +86,8 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
                 for (int z = 0; z < amount_items; z++) time_items[z] = items[z]; //Копирование во временный массив
                 for (int index_item = 0; index_item < amount_items; index_item += amount_basket) {
                     for (int d = 0; d < amount_basket; d++) {
-                        if (time_baskets[d].volume + time_items[index_item + d].volume <= max_volume) { //заносим значения во временный массив, пока объём это позволяет
+                        //заносим значения во временный массив, пока объём это позволяет
+                        if (time_baskets[d].volume + time_items[index_item + d].volume <= max_volume) { 
                             time_baskets[d].volume += time_items[index_item + d].volume;
                             time_baskets[d].weight += time_items[index_item + d].weight;
                             time_items[index_item + d].volume = 0;
@@ -96,7 +99,8 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
                 for (int z = 0; z < amount_items; z++) {
                     if (time_items[z].volume > 0) {
                         for (int ti = 0; ti < amount_basket; ti++) {
-                            if (time_baskets[ti].volume + time_items[z].volume <= max_volume) { //проверяем возможно ли добавить доп. массу в организованный список
+                            //проверяем возможно ли добавить доп. массу в организованный список
+                            if (time_baskets[ti].volume + time_items[z].volume <= max_volume) { 
                                 time_baskets[ti].volume += time_items[z].volume;
                                 time_baskets[ti].weight += time_items[z].weight;
                                 time_items[z].volume = 0;
@@ -119,7 +123,7 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
     int* index_results = new int[amount_basket * amount_items * amount_items] {0};
     int index = 0;
     unsigned long long raz = 0;
-    int answer_raz = __INT32_MAX__;
+    int answer_raz = INT32_MAX;
     int result_index = 0;
 
     for (int i = 0; i < amount_basket * amount_items * amount_items; i += amount_basket) {
@@ -132,7 +136,8 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
                 index_results[index] = raz;
                 index++;
             }
-            else if (raz == 0) { //Найдено идеально усреднённое значение (во всех корзинах одинаковый вес, а значит, максимальный для каждой из корзин)
+            //Найдено идеально усреднённое значение (во всех корзинах одинаковый вес, а значит, максимальный для каждой из корзин)
+            else if (raz == 0) {
                 result_index = i;
                 break;
             }
