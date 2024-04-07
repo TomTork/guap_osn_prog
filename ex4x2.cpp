@@ -28,6 +28,7 @@ int compare(const void *a, const void *b) { //компаратор сортир�
 Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amount_basket, float& max_volume){
     Item time; //Временная переменная для сортировки
     Item* time_items = new Item[amount_items];
+    Basket* time_baskets = new Basket[amount_basket];
     Basket* in_all_baskets = new Basket[amount_basket * amount_items * amount_items];
     int index_baskets = 0;
     for(int i = 0; i < amount_items; i++){ //Сортировка по увеличению объёма и уменьшению массы
@@ -35,7 +36,7 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
             if(items[i].volume < items[j].volume && items[i].weight > items[j].weight){
                 
                 //поиск лучших значений
-                Basket* time_baskets = new Basket[amount_basket];
+                for(int x = 0; x < amount_basket; x++) time_baskets[x] = Basket{0, 0};
                 
                 for(int z = 0; z < amount_items; z++) time_items[z] = items[z]; //Копирование во временный массив
                 for(int index_item = 0; index_item < amount_items; index_item += amount_basket){
@@ -69,7 +70,6 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
                 time = items[i];
                 items[i] = items[j];
                 items[j] = time;
-                delete[] time_baskets;
             }
         }
     }
@@ -79,7 +79,7 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
             if(items[i].volume > items[j].volume && items[i].weight < items[j].weight){
                 
                 //поиск лучших значений
-                Basket* time_baskets = new Basket[amount_basket];
+                for(int x = 0; x < amount_basket; x++) time_baskets[x] = Basket{0, 0};
                 
                 for(int z = 0; z < amount_items; z++) time_items[z] = items[z]; //Копирование во временный массив
                 for(int index_item = 0; index_item < amount_items; index_item += amount_basket){
@@ -113,11 +113,9 @@ Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amoun
                 time = items[i];
                 items[i] = items[j];
                 items[j] = time;
-                delete[] time_baskets;
             }
         }
     }
-    delete[] time_items; //Удаляем ненужный массив
     int* index_results = new int[amount_basket * amount_items * amount_items]{0};
     int index = 0;
     int raz = 0;
@@ -172,6 +170,7 @@ int main()
     cin >> K;
     cin >> Vmax;
     auto begin = chrono::steady_clock::now();
+    cout << ":ANSWER:" << endl;
     Basket* result = func_placing_items_in_baskets(N, items, K, Vmax);
     auto end = chrono::steady_clock::now();
     cout << (chrono::duration_cast<chrono::milliseconds>(end - begin)).count() << endl;
