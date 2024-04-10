@@ -2,164 +2,99 @@
 #include <string>
 #include <math.h>
 #include <chrono>
-#include <vector>
 
 using namespace std;
 
-struct Item
-{
-    long long volume = 0;
-    long long weight = 0;
+struct Object{
+    float volume = 0;
+    float weight = 0;
 };
 
-typedef struct Basket
-{
-    long long volume = 0;
-    long long weight = 0;
-} basket;
-
-int compare(const void* a, const void* b) { //компаратор сортировки в qsort
-    basket* basketA = (basket*)a;
-    basket* basketB = (basket*)b;
-    return (basketA->weight - basketB->weight);
+float searchMax(float* mas, int size){
+    float ma = __FLT_MIN__;
+    for(int i = 0; i < size; i++){
+        if(mas[i] > ma) ma = mas[i];
+    }
+    return ma;
 }
 
-//Стратегия: заносим вес по ограничению объёма, пока это возможно
-Basket* func_placing_items_in_baskets(int& amount_items, Item* items, int& amount_basket, float& max_volume) {
-    Item time; //Временная переменная для сортировки
-    Item* time_items = new Item[amount_items];
-    Basket* time_baskets = new Basket[amount_basket];
-    Basket* in_all_baskets = new Basket[amount_basket * amount_items * amount_items];
-    int index_baskets = 0;
-    for (int i = 0; i < amount_items; i++) { //Сортировка по увеличению объёма и уменьшению массы
-        for (int j = 0; j < amount_items - 1; j++) {
-            if (items[i].volume < items[j].volume && items[i].weight > items[j].weight) {
-
-                //поиск лучших значений
-                for (int x = 0; x < amount_basket; x++) time_baskets[x] = Basket{ 0, 0 };
-
-                for (int z = 0; z < amount_items; z++) time_items[z] = items[z]; //Копирование во временный массив
-                for (int index_item = 0; index_item < amount_items; index_item += amount_basket) {
-                    for (int d = 0; d < amount_basket; d++) {
-                        //заносим значения во временный массив, пока объём это позволяет
-                        if (time_baskets[d].volume + time_items[index_item + d].volume <= max_volume) { 
-                            time_baskets[d].volume += time_items[index_item + d].volume;
-                            time_baskets[d].weight += time_items[index_item + d].weight;
-                            time_items[index_item + d].volume = 0;
-                            time_items[index_item + d].weight = 0;
-                        }
-                    }
-                }
-                qsort(time_baskets, amount_basket, sizeof(basket), compare); //сортировка по возрастанию массы
-                for (int z = 0; z < amount_items; z++) {
-                    if (time_items[z].volume > 0) {
-                        //проверяем возможно ли добавить доп. массу в организованный список
-                        for (int ti = 0; ti < amount_basket; ti++) { 
-                            if (time_baskets[ti].volume + time_items[z].volume <= max_volume) {
-                                time_baskets[ti].volume += time_items[z].volume;
-                                time_baskets[ti].weight += time_items[z].weight;
-                                time_items[z].volume = 0;
-                                time_items[z].weight = 0;
-                            }
-                        }
-                    }
-                }
-                qsort(time_baskets, amount_basket, sizeof(basket), compare); //сортировка по возрастанию массы
-                for (int z = 0; z < amount_basket; z++) { //Заносим полученные значения в общий массив
-                    in_all_baskets[index_baskets] = time_baskets[z];
-                    index_baskets++;
-                }
-                time = items[i];
-                items[i] = items[j];
-                items[j] = time;
+Object* funcPlacingItemsInBaskets(int N, Object* items, int K, float Vmax){
+    Object* allIters = new Object[N * N * K];
+    int globalIndex = 0;
+    Object* iter = new Object[K];
+    Object* timeMas = new Object[N];
+    float* sumOfWeights = new float[N * N]{0};
+    int globalIndex2 = 0;
+    for(int i = 0; i < N; i++){
+        for(int j = 0; j < N; j++){
+            for(int k = 0; k < K; k++) iter[k] = Object{0, 0};
+            for(int r = 0; r < N; r++){
+                timeMas[r] = items[r];
             }
+            for(int z = 0; z < N; z++){
+                for(int k = 0; k < K; k++){
+                    if(iter[k].volume + timeMas[z].volume <= Vmax){
+                        iter[k].volume += timeMas[z].volume;
+                        iter[k].weight += timeMas[z].weight;
+                        timeMas[z].volume = 0;
+                        timeMas[z].weight = 0;
+                    }
+                }
+            }
+            for(int ind = 0; ind < N; ind++){
+                for(int k = 0; k < k; k++){
+                    if(iter[k].volume + timeMas[ind].volume <= Vmax){
+                        iter[k].volume += timeMas[ind].volume;
+                        iter[k].weight += timeMas[ind].weight;
+                        timeMas[ind].volume = 0;
+                        timeMas[ind].weight = 0;
+                    }
+                }
+            }
+            float sum = 0;
+            for(int e = 0; e < K; e++){
+                sum += iter[e].weight;
+                allIters[globalIndex] = iter[e];
+                globalIndex++;
+            }
+            swap(items[i], items[j]);
+            sumOfWeights[globalIndex2] = sum;
+            globalIndex2++;
         }
     }
-    //Проходимся по всем значениям так же, как и выше, но сортируем в обратном порядке
-    for (int i = 0; i < amount_items; i++) { //Сортировка по убыванию объёма и возрастанию массы
-        for (int j = 0; j < amount_items - 1; j++) {
-            if (items[i].volume > items[j].volume && items[i].weight < items[j].weight) {
+    float maxSumOfWeights = searchMax(sumOfWeights, globalIndex2);
+    Object* result = new Object[K];
 
-                //поиск лучших значений
-                for (int x = 0; x < amount_basket; x++) time_baskets[x] = Basket{ 0, 0 };
-
-                for (int z = 0; z < amount_items; z++) time_items[z] = items[z]; //Копирование во временный массив
-                for (int index_item = 0; index_item < amount_items; index_item += amount_basket) {
-                    for (int d = 0; d < amount_basket; d++) {
-                        //заносим значения во временный массив, пока объём это позволяет
-                        if (time_baskets[d].volume + time_items[index_item + d].volume <= max_volume) { 
-                            time_baskets[d].volume += time_items[index_item + d].volume;
-                            time_baskets[d].weight += time_items[index_item + d].weight;
-                            time_items[index_item + d].volume = 0;
-                            time_items[index_item + d].weight = 0;
-                        }
-                    }
+    float resultRaz = __FLT_MAX__;
+    for(int i = 0; i < globalIndex2; i++){
+        if(sumOfWeights[i] == maxSumOfWeights){
+            float raz = 0;
+            for(int j = 0; j < K - 1; j++){
+                raz += abs(allIters[j + i * K].weight - allIters[j + i * K + 1].weight);
+            }
+            if(raz < resultRaz){
+                resultRaz = raz;
+                for(int q = 0; q < K; q++){
+                    result[q] = allIters[i * K + q];
                 }
-                qsort(time_baskets, amount_basket, sizeof(basket), compare); //сортировка по возрастанию массы
-                for (int z = 0; z < amount_items; z++) {
-                    if (time_items[z].volume > 0) {
-                        for (int ti = 0; ti < amount_basket; ti++) {
-                            //проверяем возможно ли добавить доп. массу в организованный список
-                            if (time_baskets[ti].volume + time_items[z].volume <= max_volume) { 
-                                time_baskets[ti].volume += time_items[z].volume;
-                                time_baskets[ti].weight += time_items[z].weight;
-                                time_items[z].volume = 0;
-                                time_items[z].weight = 0;
-                            }
-                        }
-                    }
-                }
-                qsort(time_baskets, amount_basket, sizeof(basket), compare); //сортировка по возрастанию массы
-                for (int z = 0; z < amount_basket; z++) { //Заносим полученные значения в общий массив
-                    in_all_baskets[index_baskets] = time_baskets[z];
-                    index_baskets++;
-                }
-                time = items[i];
-                items[i] = items[j];
-                items[j] = time;
             }
         }
-    }
-    unsigned long long raz = 0;
-    int answer_raz = INT32_MAX;
-    int result_index = 0;
-
-    for (int i = 0; i < amount_basket * amount_items * amount_items; i += amount_basket) {
-        raz = 0;
-        if (in_all_baskets[i].weight > 0 && in_all_baskets[i].volume > 0) {
-            for (int j = 0; j < amount_basket - 1; j++) {
-                raz += abs(in_all_baskets[i + j].weight - in_all_baskets[i + j + 1].weight); //Вычисляем сумму разностей между соседними массами
-            }
-            //Найдено идеально усреднённое значение (во всех корзинах одинаковый вес, а значит, максимальный для каждой из корзин)
-            if (raz == 0) {
-                result_index = i;
-                break;
-            }
-            else if (answer_raz > raz) { //Находим минимальную разницу
-                answer_raz = raz;
-                result_index = i;
-            }
-        }
-    }
-    //Заносим значение в ответ
-    Basket* result = new Basket[amount_basket];
-    for (int i = 0; i < amount_basket; i++) {
-        result[i] = in_all_baskets[result_index + i];
     }
     return result;
 }
 
+
 int main()
 {
-    Item item;
+    Object item;
     int N, K;
     float _volume, _weight, Vmax;
     cin >> N;
-    Item* items = new Item[N];
-    for (int i = 0; i < N; i++) {
+    Object* items = new Object[N];
+    for(int i = 0; i < N; i++){
         cin >> _volume;
         cin >> _weight;
-
+        
         item.volume = _volume;
         item.weight = _weight;
         items[i] = item;
@@ -168,11 +103,11 @@ int main()
     cin >> Vmax;
     auto begin = chrono::steady_clock::now();
     cout << ":ANSWER:" << endl;
-    Basket* result = func_placing_items_in_baskets(N, items, K, Vmax);
+    Object* result = funcPlacingItemsInBaskets(N, items, K, Vmax);
     auto end = chrono::steady_clock::now();
     cout << (chrono::duration_cast<chrono::milliseconds>(end - begin)).count() << endl;
     cout << endl;
-    for (int i = 0; i < K; i++) {
+    for(int i = 0; i < K; i++){
         cout << result[i].volume << " " << result[i].weight << endl;
     }
 }
