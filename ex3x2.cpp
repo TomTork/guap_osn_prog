@@ -15,8 +15,8 @@ vector<pair<int, int>> nonRepeatableRoutes(int n, int m, vector<pair<int, int>> 
     }
     cout << endl;
 
-    if (iter > K - 1 || rightMoves.size() == 0) return vector<pair<int, int>>{}; //неудачный путь
-    if (iter == K - 1 && (bool)(startPosition == endPosition)) return result; //удачный путь
+    if (iter == K && (bool)(startPosition == endPosition)) return result; //удачный путь
+    if (iter > K || rightMoves.size() == 0) return vector<pair<int, int>>{}; //неудачный путь
     
     if (iter == 0) result.push_back(startPosition);
     //проверка на выход за пределы области
@@ -42,10 +42,10 @@ vector<vector<pair<int, int>>> controller(int n, int m, vector<pair<int, int>> r
     for (int i = 0; i < rightMoves.size(); i++) {
         for (int j = i; j < rightMoves.size(); j++) {
             cout << "ATTEMPT " << attempt << endl;
-            iteration = nonRepeatableRoutes(n, m, rightMoves, startPosition, endPosition, K + 1);
+            iteration = nonRepeatableRoutes(n, m, rightMoves, startPosition, endPosition, K);
             cout << endl;
             //проверка возвращаемого значения, способы сходить не должны повторяться
-            if (iteration.size() == K + 1 &&
+            if (iteration.size() == K &&
                 answer.end() == find(answer.begin(),
                     answer.end(), iteration)) answer.push_back(iteration);
             swap(rightMoves[i], rightMoves[j]);
@@ -61,9 +61,9 @@ int main()
 {
     vector<vector<pair<int, int>>> answer = controller(4, 4, { p(2, -1) , p(-2, 1),
         p(1, 2), p(-1, -2) }, p(0, 0), p(3, 1), 3); //из условия
-    //vector<vector<p>> answer = controller(5, 5, { p(2, 1), p(-1, 2), p(-1, 2), p(2, 1) }, p(1, 1), p(2, 4), 2); //два направления
-    //vector<vector<p>> answer = controller(5, 5, { p(2, 1), p(-1, 2), p(-1, 2), p(2, 1) }, p(1, 1), p(5, 5), 2); //до точки невозможно добраться
-    //vector<vector<p>> answer = controller(5, 5, { p(2, 1), p(-1, 2), p(-1, 2), p(2, 1) }, p(1, 1), p(1, 1), -1); //фигура уже в этой точке
+    //vector<vector<p>> answer = controller(5, 5, { p(2, 1), p(-1, 2), p(-1, 2), p(2, 1) }, p(1, 1), p(2, 4), 3); //два направления
+    //vector<vector<p>> answer = controller(5, 5, { p(2, 1), p(-1, 2), p(-1, 2), p(2, 1) }, p(1, 1), p(5, 5), 3); //до точки невозможно добраться
+    //vector<vector<p>> answer = controller(5, 5, { p(2, 1), p(-1, 2), p(-1, 2), p(2, 1) }, p(1, 1), p(1, 1), 0); //фигура уже в этой точке
     for (int k = 0; k < answer.size(); k++) {
         cout << "Way number: " << k << endl;
         for (int i = 0; i < answer[k].size(); i++) {
