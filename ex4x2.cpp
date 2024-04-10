@@ -42,7 +42,7 @@ Object* funcPlacingItemsInBaskets(int N, Object* items, int K, float Vmax) {
                     }
                 }
             }
-            for (int ind = 0; ind < N; ind++) { //Проевряем не осталось ли лишних элементов, если можно положить - кладём
+            for (int ind = 0; ind < N; ind++) { //Проверяем не осталось ли лишних элементов, если можно положить - кладём
                 for (int k = 0; k < K; k++) {
                     if (iter[k].volume + timeMas[ind].volume <= Vmax) {
                         iter[k].volume += timeMas[ind].volume;
