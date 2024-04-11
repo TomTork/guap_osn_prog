@@ -10,8 +10,8 @@ unsigned char* generateRandomNumber(int n, vector<unsigned char> init){
     unsigned char b;
     int indexInit = 0;
     for(int i = 1; i < n; i++){
-        if(indexInit + 1 == init.size() - 1) indexInit = 0;
-        A[i] = (init[indexInit] * A[i - 1] + init[indexInit + 1]) % 2;
+        if(indexInit + 2 == init.size() - 1) indexInit = 0;
+        A[i] = ((init[indexInit] * A[i - 1] + init[indexInit + 1]) % 2) ^ (init[indexInit + 2] & A[i - 1] & (i % 2));
         indexInit++;
     }
     return A;
