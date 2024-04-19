@@ -4,25 +4,46 @@
 
 using namespace std;
 
-unsigned char* generateRandomNumber(int n, vector<unsigned char> init){
-    unsigned char* A = new unsigned char[n]{0};
-    unsigned char a;
-    unsigned char b;
-    int indexInit = 0;
-    for(int i = 1; i < n; i++){
-        if(indexInit + 2 == init.size() - 1) indexInit = 0;
-        A[i] = ((init[indexInit] * A[i - 1] + init[indexInit + 1]) % 2) ^ (init[indexInit + 2] & A[i - 1] & (i % 2));
-        indexInit++;
+int generateNumberFromByte(vector<unsigned char> BYTE, int _size = 8){
+    cout << "TRUE" << endl;
+    int number = 0;
+    for(int i = _size - 1; i >= 0; i--){
+        number += BYTE[i] * pow(2, _size - i - 1);
     }
-    return A;
+    return number;
+}
+
+vector<int> generateRandomNumber(int n){
+    unsigned char* A = new unsigned char[n]{0};
+    int controlSum = n % 8;
+    vector<int> numbers;
+    for(int i = 1; i < n; i++){
+        A[i] = ((clock() * A[i - 1] + (clock() * i)) ^ clock()) % 2;
+    }
+    vector<vector<unsigned char>> BYTES;
+    vector<unsigned char> TIME_BYTE;
+    int counter = 0;
+    for(int i = 0; i < n; i++){
+        TIME_BYTE.push_back(A[i]);
+        counter++;
+        if(counter == 8 || (i == n - 1 && controlSum != 0)){
+            BYTES.push_back(TIME_BYTE);
+            TIME_BYTE.clear();
+            counter = 0;
+        }
+    }
+    for(vector<unsigned char> e: BYTES){
+        numbers.push_back(generateNumberFromByte(e, e.size()));
+    }
+    return numbers;
 }
 
 int main(){
     int n = 22;
-    vector<unsigned char> init = { 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1 };
-    unsigned char* answer = generateRandomNumber(n, init);
-    for(int i = 0; i < n; i++){
-        if(answer[i] == 0) cout << 0 << endl;
-        else cout << 1 << endl;
+    for(int j = 0; j < 1; j++){
+        vector<int> answer = generateRandomNumber(n);
+        for(int i = 0; i < answer.size(); i++) cout << answer[i] << endl;
+        cout << endl;
     }
+    
 }
