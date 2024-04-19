@@ -17,7 +17,7 @@ vector<int> generateRandomNumber(int n){
     int controlSum = n % 8;
     vector<int> numbers;
     for(int i = 1; i < n; i++){
-        A[i] = ((clock() * A[i - 1] + (clock() * i)) ^ clock()) % 2;
+        A[i] = ((clock() * A[i - 1] + (clock() * i + i)) ^ clock()) % 2;
     }
     vector<vector<unsigned char>> BYTES;
     vector<unsigned char> TIME_BYTE;
@@ -44,5 +44,4 @@ int main(){
         for(int i = 0; i < answer.size(); i++) cout << answer[i] << endl;
         cout << endl;
     }
-    
 }
