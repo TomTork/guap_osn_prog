@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -12,12 +13,22 @@ int generateNumberFromByte(vector<unsigned char> BYTE, int _size = 8){
     return number;
 }
 
+int _sum(unsigned char* A, int _size){
+    int su = 0;
+    for(int i = 0; i < _size; i++) su += A[i];
+    return su;
+}
+
 vector<int> generateRandomNumber(int n){
     unsigned char* A = new unsigned char[n]{0};
     int controlSum = n % 8;
     vector<int> numbers;
+    hash<unsigned char> hasher;
+    int add = 1, __sum;
     for(int i = 1; i < n; i++){
-        A[i] = ((clock() * A[i - 1] + (clock() * i + i)) ^ clock()) % 2;
+        __sum = _sum(A, n);
+        if(__sum != 0) add = (__sum / i >> A[i-1]);
+        A[i] = ((hasher(clock()) * A[i - 1] * _sum(A, n) / i - add + ((clock()) ^ i + (A[i - 1] << i) * hasher(clock()) | A[i - 1]))) % 2;
     }
     vector<vector<unsigned char>> BYTES;
     vector<unsigned char> TIME_BYTE;
@@ -38,7 +49,7 @@ vector<int> generateRandomNumber(int n){
 }
 
 int main(){
-    int n = 22;
+    int n = 2200;
     for(int j = 0; j < 1; j++){
         vector<int> answer = generateRandomNumber(n);
         for(int i = 0; i < answer.size(); i++) cout << answer[i] << endl;
