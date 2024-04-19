@@ -5,7 +5,6 @@
 using namespace std;
 
 int generateNumberFromByte(vector<unsigned char> BYTE, int _size = 8){
-    cout << "TRUE" << endl;
     int number = 0;
     for(int i = _size - 1; i >= 0; i--){
         number += BYTE[i] * pow(2, _size - i - 1);
