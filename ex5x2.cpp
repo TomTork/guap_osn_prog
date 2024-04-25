@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool inMas(vector<unsigned int> mas, int value){
+bool inMas(vector<unsigned int> mas, int value){ //Проверка вхождения элемента в массив (вектор)
     for(int i = 0; i < mas.size(); i++){
         if(mas[i] == value) return true;
     }
@@ -13,21 +13,19 @@ bool inMas(vector<unsigned int> mas, int value){
 }
 
 unsigned char* multidimensionalTurboCode(int T, int Nd, int N, unsigned char* C){
-    int S = 1;
-    unsigned char* allIters = new unsigned char[Nd * N];
+    int S = 1; //Шаг, с помощью которого будем брать элементы
+    unsigned char* allIters = new unsigned char[Nd * N]; //Массив всех индексов
     int index = 0;
-    vector<pair<int, int>> accIndexes;
+    vector<pair<int, int>> accIndexes; //вектор доступных индексов
     unsigned char* answer = new unsigned char[Nd * N];
-    for(int i = 0; i < N; i++){
+    for(int i = 0; i < N; i++){ //преинициализируем вектор доступных индексов
         accIndexes.push_back(pair<int, int>(i, -1));
     }
-    vector<unsigned int> inds;
-    int ind = 0;
+    vector<unsigned int> inds; //временный вектор индексов
     for(int env = 0; env < Nd; env++){
         for(int i = 0; i < N; i++){
             accIndexes[i].second = accIndexes[i].first + S;
         }
-        ind = 0;
         inds.push_back(accIndexes[0].first);
         inds.push_back(accIndexes[0].second);
         for(int i = 1; i < N; i++){
@@ -41,7 +39,7 @@ unsigned char* multidimensionalTurboCode(int T, int Nd, int N, unsigned char* C)
         index += N;
         S *= T;
     }
-    for(int i = 0; i < Nd * N; i++){
+    for(int i = 0; i < Nd * N; i++){ //Записываем ответ
         answer[i] = C[allIters[i]];
     }
     return answer;
