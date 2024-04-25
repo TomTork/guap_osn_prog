@@ -14,7 +14,7 @@ bool inMas(vector<unsigned int> mas, int value){ //Проверка вхожде
 
 unsigned char* multidimensionalTurboCode(int T, int Nd, int N, unsigned char* C){
     int S = 1; //Шаг, с помощью которого будем брать элементы
-    unsigned char* allIters = new unsigned char[Nd * N]; //Массив всех индексов
+    unsigned int* allIters = new unsigned int[Nd * N]; //Массив всех индексов
     int index = 0;
     vector<pair<int, int>> accIndexes; //вектор доступных индексов
     unsigned char* answer = new unsigned char[Nd * N];
