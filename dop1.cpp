@@ -16,7 +16,7 @@ struct Bacterium
     bool alive = true;
 };
 
-pair<int, int> generateRandomCoords(int start=0, int end){
+pair<int, int> generateRandomCoords(int start=0, int end=0){
     return pair<int, int>(rand() % (end - start + 1) + start, rand() % (end - start + 1) + start);
 }
 
@@ -29,15 +29,29 @@ bool propability(int chance){ //Вычисление вероятности
     return false;
 }
 
-void LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
+int controlSum(Bacterium ** field, int N){
+    int su = 0;
+    for(int i = 0; i < N; i++){
+        for(int j = 0; j < N; j++){
+            if(field[i][j].busy){
+                su += 1;
+            }
+        }
+    }
+    return su;
+}
+
+int LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
     Bacterium ** field = new Bacterium*[N];
+    for(int i = 0; i < N; i++) field[i] = new Bacterium[N];
     int count = 0;
     pair<int, int> coords;
     Bacterium time;
+    int cs;
     for(int day = 0; day < D; day++){
         count = generateRandomVaue(K1, K2);
         for(int b = 0; b < count; b++){
-            coords = generateRandomCoords(0, N);
+            coords = generateRandomCoords(0, N - 1);
             if(!field[coords.first][coords.second].busy){ //Место не занято
                 field[coords.first][coords.second].busy = true;
                 field[coords.first][coords.second].x = coords.first;
@@ -45,6 +59,9 @@ void LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
                 field[coords.first][coords.second].dayOfAppearance = day;
             }
         }
+        cs = controlSum(field, N);
+        if(cs == N * N){ return day; }
+        // cout << cs << endl;
         for(int x = 0; x < N; x++){
             for(int y = 0; y < N; y++){
                 time = field[x][y];
@@ -105,9 +122,14 @@ void LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
             }
         }
     }
+    return -1;
 }
 
 int main(){
-    int N, K1, K2, D, T, P;
-
+    int N = 100, K1 = 1, K2 = 10, D = 7, T = 14, P = 5;
+    int day;
+    for(int i = 0; i < 100; i++) {
+        day = LifeTimeOfBacterium(N, K1, K2, D, T, P);
+        cout << day << endl;
+    }
 }
