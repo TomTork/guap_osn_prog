@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -61,7 +63,6 @@ int LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
         }
         cs = controlSum(field, N);
         if(cs == N * N){ return day; }
-        // cout << cs << endl;
         for(int x = 0; x < N; x++){
             for(int y = 0; y < N; y++){
                 time = field[x][y];
@@ -126,6 +127,7 @@ int LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
 }
 
 int main(){
+    srand(time(NULL));
     int N = 100, K1 = 1, K2 = 10, D = 7, T = 14, P = 5;
     int day;
     for(int i = 0; i < 100; i++) {
