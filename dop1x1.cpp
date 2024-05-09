@@ -8,8 +8,6 @@
 
 using namespace std;
 
-int globalCs = 0;
-
 struct Bacterium
 {
     bool busy = false;
@@ -38,7 +36,6 @@ bool controlSum(Bacterium** field, int N, int breakIter){
             if(field[i][j].busy) cs += 1;
         }
     }
-    //if(globalCs != cs){ globalCs = cs; cout << globalCs << endl; }
     if(cs == breakIter) return true;
     return false;
 }
@@ -98,7 +95,7 @@ int main(){
     srand(time(NULL)); //seed случайного числа
     int answerDay;
     for(int i = 0; i < 100; i++){
-        answerDay = LifeTimeOfBacterium(100, 1, 10, 7, 14, 2);
+        answerDay = LifeTimeOfBacterium(200, 1, 10, 7, 14, 2);
         cout << answerDay << endl;
     }
 }
