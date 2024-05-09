@@ -8,6 +8,8 @@
 
 using namespace std;
 
+int globalCs = 0;
+
 struct Bacterium
 {
     bool busy = false;
@@ -36,6 +38,7 @@ bool controlSum(Bacterium** field, int N, int breakIter){
             if(field[i][j].busy) cs += 1;
         }
     }
+    //if(globalCs != cs){ globalCs = cs; cout << globalCs << endl; }
     if(cs == breakIter) return true;
     return false;
 }
@@ -68,10 +71,9 @@ int LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
                 if(field[i][j].busy && field[i][j].alive && field[i][j].dayOfAppearance <= day + 1 && field[i][j].dayLife < T){
                     if(field[i][j].alive) field[i][j].dayLife += 1;
                     if(field[i][j].alive && field[i][j].dayLife > T / 2){
-                        if(propability(P)){
+                        if(propability(P -= 2)){
                             field[i][j].alive = false;
                         }
-                        P -= 2;
                     }
                     if(i - 1 >= 0 && !field[i - 1][j].busy && propability(P)) field[i - 1][j] = Bacterium { true, 0, day, true };
                     if(i + 1 < N && !field[i + 1][j].busy && propability(P)) field[i + 1][j] = Bacterium { true, 0, day, true };
@@ -81,11 +83,11 @@ int LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
                     if(i + 1 < N && j - 1 >= 0 && !field[i + 1][j - 1].busy && propability(P)) field[i + 1][j - 1] = Bacterium { true, 0, day, true };
                     if(i - 1 >= 0 && j + 1 < N && !field[i - 1][j + 1].busy && propability(P)) field[i - 1][j + 1] = Bacterium { true, 0, day, true };
                     if(i - 1 >= 0 && j - 1 >= 0 && !field[i - 1][j - 1].busy && propability(P)) field[i - 1][j - 1] = Bacterium { true, 0, day, true };
-                    P += 5;
                 }
                 
             }
         }
+        P += 5;
         iter++;
     }
     return answerDay;
@@ -95,12 +97,8 @@ int LifeTimeOfBacterium(int N, int K1, int K2, int D, int T, int P){
 int main(){
     srand(time(NULL)); //seed случайного числа
     int answerDay;
-    int a = 0;
-    for(int i = 0; i < 1000; i++){
-        answerDay = LifeTimeOfBacterium(500, 1, 1, 7, 14, 5);
-        if(answerDay == -1) { cout << "true" << endl; a += 1; }
+    for(int i = 0; i < 100; i++){
+        answerDay = LifeTimeOfBacterium(100, 1, 10, 7, 14, 2);
+        cout << answerDay << endl;
     }
-    cout << endl;
-    cout << endl;
-    cout << a << endl;
 }
