@@ -24,7 +24,7 @@ struct Transactions{
     float money;
 };
 
-MyOperator scrapData(int maxPeople, string &line){
+MyOperator scrapData(int maxPeople, string &line){ //Функция для обработки входной строки
     string name, other, raw;
     float money;
     auto *notRelated = new string[maxPeople]{""};
@@ -32,7 +32,7 @@ MyOperator scrapData(int maxPeople, string &line){
     other = line.substr(line.find(':'), line.length());
     if (other.find('/') != std::string::npos){
         raw = other.substr(other.find('/')+1, other.length());
-        if (raw.find(',') != std::string::npos){ // more one people
+        if (raw.find(',') != std::string::npos){ //имён участников, не включённых в трату, больше одного
             int index = 0, findIndex = 0;
             while (raw.find(',') != std::string::npos){
                 if (index == maxPeople) break;
@@ -50,7 +50,7 @@ MyOperator scrapData(int maxPeople, string &line){
     return MyOperator{name, money, notRelated};
 }
 
-int dividerForDebt(int n, string*& people){
+int dividerForDebt(int n, string*& people){ //делитель для общего долга
     int answer = 0;
     for(int i = 0; i < n; i++){
         if(!people[i].empty()) answer++;
@@ -59,14 +59,14 @@ int dividerForDebt(int n, string*& people){
     return n - answer;
 }
 
-bool nameInMas(string& name, int n, string*& people){
+bool nameInMas(string& name, int n, string*& people){ //проверка вхождения имени в массив имён
     for(int i = 0; i < n; i++){
         if(people[i] == name) return true;
     }
     return false;
 }
 
-SpendMustForm* generateTable(int n, string*& names, MyOperator*& operators) {
+SpendMustForm* generateTable(int n, string*& names, MyOperator*& operators) { //генерация формы для задания 1
     auto* form = new SpendMustForm[n];
     float spend, must;
     for(int i = 0; i < n; i++){
@@ -90,7 +90,7 @@ SpendMustForm* generateTable(int n, string*& names, MyOperator*& operators) {
 }
 
 //Тактика: перевести все деньги одному пользователю, а он переведёт долги остальным
-vector<Transactions> generateTransactions(int n, SpendMustForm*& form){
+vector<Transactions> generateTransactions(int n, SpendMustForm*& form){ //функция для задания 2
     vector<Transactions> transactions;
     float totalDebt = 0;
     for(int i = 0; i < n; i++) totalDebt += form[i].must;
@@ -136,12 +136,12 @@ int main(){
     }
     in.close();
     auto* answer1 = generateTable(n, names, operators);
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < n; i++){ //вывод таблицы задания 1
         cout << answer1[i].name << "\t\t" << "|" << "\t\t" << setprecision(8) << answer1[i].spend << "\t\t" << "|"
         << "\t\t" << setprecision(8) << answer1[i].must << endl;
     }
     cout << endl;
-    for(auto element: generateTransactions(n, answer1)){
+    for(auto element: generateTransactions(n, answer1)){ //вывод транзакций задания 2
         cout << element.sender << " -> " << element.recipient << " " << element.money << endl;
     }
     return 0;
